@@ -1,0 +1,13 @@
+{
+  "title": "Nearby New Tab",
+  "name": "nearby-new-tab",
+  "version": "0.0.1",
+  "description": "Provides functionality to open a new tab next to the currently open one.",
+  "main": "index.js",
+  "author": "AlexN",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT"
+}
