@@ -1,0 +1,30 @@
+<html>
+<head>
+<style>
+#close{
+    border:0;
+    float:right;
+}
+#close:hover{
+    background-color:gray;
+}
+</style>
+</head>
+<body>
+<button id="close" onclick="closePanel()">X</button>
+<div id="message">This is a text line.</div></body>
+
+<script>
+    var messageDiv = document.getElementById("message");
+    //In the docs it says the javascript in the panel should use self.port.emit(...)
+    //But because this script is inside a html "self" refers to the window object, which 
+    //has a property "addon", which in turn has the port object to send messages.
+    function closePanel(){
+        addon.port.emit("close-panel");
+    }
+    addon.port.on("show-message", function(message){
+        messageDiv.textContent = message;
+    });
+</script>
+
+</html>

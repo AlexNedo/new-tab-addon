@@ -4,6 +4,18 @@ var hotkeys = require("sdk/hotkeys");
 var tabs = require("sdk/tabs/utils");
 var windows = require("sdk/window/utils");
 
+var simplePrefs = require("sdk/simple-prefs");
+var panel = require("sdk/panel");
+var hotkey = require("sdk/hotkeys");
+
+ILLEGAL_COMBOS = ["accel-z", "accel-c", "accel-x", "accel-v", "accel-q"];
+var prefs = simplePrefs.prefs;
+
+var old_ctrl_pref = prefs["mod_ctrl"];
+var old_shift_pref = prefs["mod_shift"];
+var old_alt_pref = prefs["mod_alt"];
+var old_key_pref = prefs["key"];
+
 //The current active window. Through its document property one can access the 
 //DOM of the browser UI itself. (tab bar, url bar ...)
 currentWindow = windows.getMostRecentBrowserWindow();
@@ -32,12 +44,6 @@ var button = buttons.ActionButton({
   onClick: newNearTab
 });
 
-//Own hotkey for the newNearTab
-var openTabHotkey = hotkeys.Hotkey({
-    combo:"accel-shift-t",
-    onPress:newNearTab
-});
-
 
 //newNearTab shall also be called, when a middle click is executed on the new tab buttons
 
@@ -58,3 +64,91 @@ var secondNewTabButton = currentWindow.document.getAnonymousElementByAttribute(
 secondNewTabButton.onclick = function(mouseEvent) {
                                     if (mouseEvent.button==1) newNearTab();
                              };
+
+//Generates the correct hotkey combo string for the Hotkey constructor
+function makeComboString(){
+    values = [];
+    if (prefs["mod_ctrl"] === "KEY_SET")
+        values.push("accel");
+    if (prefs["mod_shift"] === "KEY_SET")
+        values.push("shift");
+    if (prefs["mod_alt"] === "KEY_SET")
+        values.push("alt");
+    values.push(prefs["key"][4].toLowerCase());
+    return values.join("-");
+}
+
+var currentHotkey = hotkey.Hotkey({
+    combo: makeComboString(),
+    onPress: newNearTab
+});
+
+//this Panel is used for showing error messages after illegal preference changes
+var myPanel = panel.Panel( {
+        width: 400,
+        height: 50,
+        contentURL: "./panel.html"
+});
+myPanel.port.on("close-panel", function(){
+    console.log("Close Panel");
+    myPanel.hide();
+});
+
+function showMessage(message){
+    myPanel.port.emit("show-message", message);
+    myPanel.show();
+}
+
+function resetPrefsToOld(){
+    //temporarily unregister prefChangeListener
+    simplePrefs.removeListener("", onPrefChange);
+    prefs["mod_ctrl"] = old_ctrl_pref;
+    prefs["mod_shift"] = old_shift_pref;
+    prefs["mod_alt"] = old_alt_pref;
+    prefs["key"] = old_key_pref;
+    simplePrefs.on("", onPrefChange);
+}
+
+function onPrefChange(prefName){
+    
+    //Check whether shift is the only modifier
+    if (prefs["mod_ctrl"] === "KEY_NOT_SET" 
+            && prefs["mod_shift"] === "KEY_SET"
+            && prefs["mod_alt"] === "KEY_NOT_SET")
+    {
+        showMessage("Shift as the only modifier is not allowed.");
+        resetPrefsToOld();
+        return;
+    }
+    
+    //Check whether no modifier at all was set
+    if (prefs["mod_ctrl"] === "KEY_NOT_SET" 
+            && prefs["mod_shift"] === "KEY_NOT_SET"
+            && prefs["mod_alt"] === "KEY_NOT_SET")
+    {
+        showMessage("At least one modifier must be set.");
+        resetPrefsToOld();
+        return;
+    }
+    
+    var hotkeyString = makeComboString();
+    
+    //Check for illegal Combos
+    if (ILLEGAL_COMBOS.indexOf(hotkeyString) != -1){
+        showMessage("Illegal hotkey. Choose another.");
+        resetPrefsToOld();
+        return;
+    }
+    
+    //Backup current values for potential illegal preference change in the future
+    old_ctrl_pref = prefs["mod_ctrl"];
+    old_shift_pref = prefs["mod_shift"];
+    old_alt_pref = prefs["mod_alt"];
+    old_key_pref = prefs["key"];
+
+    //remap the actual hotkey
+    currentHotkey.destroy();
+    currentHotkey = hotkey.Hotkey({combo:hotkeyString, onPress: newNearTab});
+}
+
+simplePrefs.on("", onPrefChange);

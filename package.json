@@ -1,13 +1,106 @@
 {
   "title": "Nearby New Tab",
   "name": "nearby-new-tab",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Provides functionality to open a new tab next to the currently open one.",
   "main": "index.js",
   "author": "AlexN",
   "engines": {
-    "firefox": ">=38.0a1",
-    "fennec": ">=38.0a1"
+    "firefox": ">=38.0a1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "preferences" : [
+    {
+      "type" : "menulist",
+      "name" : "mod_ctrl",
+      "title" : "Modifier Ctrl",
+      "value" : "KEY_SET",
+      "options" : [
+          {
+             "value" : "KEY_NOT_SET",
+             "label" : "No"
+          },
+          {
+             "value" : "KEY_SET",
+             "label" : "Yes"
+          }
+      ]
+    },
+    {
+      "type" : "menulist",
+      "name" : "mod_shift",
+      "title" : "Modifier Shift",
+      "value" : "KEY_SET",
+      "options" : [
+          {
+             "value" : "KEY_NOT_SET",
+             "label" : "No"
+          },
+          {
+             "value" : "KEY_SET",
+             "label" : "Yes"
+          }
+      ]
+    },
+    {
+      "type" : "menulist",
+      "name" : "mod_alt",
+      "title" : "Modifier Alt",
+      "value" : "KEY_SET",
+      "options" : [
+          {
+             "value" : "KEY_NOT_SET",
+             "label" : "No"
+          },
+          {
+             "value" : "KEY_SET",
+             "label" : "Yes"
+          }
+      ]
+    },
+    {
+      "type" : "menulist",
+      "name" : "key",
+      "title" : "Key",
+      "value" : "KEY_T",
+      "options" : [
+          { "value" : "KEY_A", "label" : "A" },
+          { "value" : "KEY_B", "label" : "B" },
+          { "value" : "KEY_C", "label" : "C" },
+          { "value" : "KEY_D", "label" : "D" },
+          { "value" : "KEY_E", "label" : "E" },
+          { "value" : "KEY_F", "label" : "F" },
+          { "value" : "KEY_G", "label" : "G" },
+          { "value" : "KEY_H", "label" : "H" },
+          { "value" : "KEY_I", "label" : "I" },
+          { "value" : "KEY_J", "label" : "J" },
+          { "value" : "KEY_K", "label" : "K" },
+          { "value" : "KEY_L", "label" : "L" },
+          { "value" : "KEY_M", "label" : "M" },
+          { "value" : "KEY_N", "label" : "N" },
+          { "value" : "KEY_O", "label" : "O" },
+          { "value" : "KEY_P", "label" : "P" },
+          { "value" : "KEY_Q", "label" : "Q" },
+          { "value" : "KEY_R", "label" : "R" },
+          { "value" : "KEY_S", "label" : "S" },
+          { "value" : "KEY_T", "label" : "T" },
+          { "value" : "KEY_U", "label" : "U" },
+          { "value" : "KEY_V", "label" : "V" },
+          { "value" : "KEY_W", "label" : "W" },
+          { "value" : "KEY_X", "label" : "X" },
+          { "value" : "KEY_Y", "label" : "Y" },
+          { "value" : "KEY_Z", "label" : "Z" },
+          { "value" : "KEY_1", "label" : "1" },
+          { "value" : "KEY_2", "label" : "2" },
+          { "value" : "KEY_3", "label" : "3" },
+          { "value" : "KEY_4", "label" : "4" },
+          { "value" : "KEY_5", "label" : "5" },
+          { "value" : "KEY_6", "label" : "6" },
+          { "value" : "KEY_7", "label" : "7" },
+          { "value" : "KEY_8", "label" : "8" },
+          { "value" : "KEY_9", "label" : "9" },
+          { "value" : "KEY_0", "label" : "0" }
+      ]
+    }
+  ]
 }
